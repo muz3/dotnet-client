@@ -1,0 +1,5 @@
+To Run:
+	1. install dotnet-cli (https://github.com/dotnet/cli)
+	2. add dotnet path (export PATH=/usr/local/share/dotnet:$PATH)
+	3. go to xtrace-dotnet-client, run "dotnet restore"
+	4. then run "dotnet run"
