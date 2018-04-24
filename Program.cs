@@ -13,6 +13,7 @@ namespace MQTTPublisherTest
 {
     internal class Publisher
     {
+        public static ManualResetEvent Shutdown = new ManualResetEvent(false);
         static void Main()
         {
     		// configs, please filling your information accordingly
@@ -52,50 +53,52 @@ namespace MQTTPublisherTest
 
                 await mqttPublisherClient.StartAsync(options);
                 Console.WriteLine("mqtt client started\n");
-                
-                while (true)
+
+                mqttPublisherClient.Disconnected += (s, e) =>
                 {
-                    Console.WriteLine("Press 'P' to publish, 'X' to exit.");
-                    var c = Console.ReadKey().KeyChar;
-                    Console.WriteLine();
-                    if (c == 'P' || c == 'p')
+                    Console.WriteLine("### DISCONNECTED FROM SERVER ###");
+                };
+
+                mqttPublisherClient.Connected += (s, e) =>
+                {
+                    Console.WriteLine("### CONNECTED WITH SERVER ###");
+                };
+
+                Action send = async () =>
+                {
+                    var msg = new MqttApplicationMessage
                     {
-                     
-                        var msg = new MqttApplicationMessage
-                        {
-                            Topic = xtraceTopic,
-                            QualityOfServiceLevel = MqttQualityOfServiceLevel.AtLeastOnce,
-                            Retain = true,
-                            Payload = System.Text.Encoding.UTF8.GetBytes( 
-                            	Newtonsoft.Json.JsonConvert.SerializeObject(new {
-														    data = yourXML,  //xml string needs to encoded and escaped utf-8
-														    auth =  new {
-														      access_token = "",  // subject to change later
-														      secret_token = "" // subject to change later
-														    }
-													  	})
-                            )		
-                        };
-                        await mqttPublisherClient.PublishAsync(msg);
-                        Console.WriteLine($"Published topic: {msg.Topic}");
-                    
-                        //***************************************************************
-                        //adjust this value to stop published messages from being dropped
-                        //Thread.Sleep(10);
-                        //***************************************************************
-                     
-                    }
-                    else if (c == 'X' || c == 'x')
-                    {
-                      break;
-                    }
+                        Topic = xtraceTopic,
+                        QualityOfServiceLevel = MqttQualityOfServiceLevel.AtLeastOnce,
+                        Retain = true,
+                        Payload = System.Text.Encoding.UTF8.GetBytes( 
+                            Newtonsoft.Json.JsonConvert.SerializeObject(new {
+                                                        data = yourXML,  //xml string needs to encoded and escaped utf-8
+                                                        auth =  new {
+                                                            access_token = "",  // subject to change later
+                                                            secret_token = "" // subject to change later
+                                                        }
+                                                    })
+                        )		
+                    };
+                    await mqttPublisherClient.PublishAsync(msg);
+                    Console.WriteLine($"Published topic: {msg.Topic}");
+                };
+
+                for ( var i = 1; i <= 1000; i++){
+                    Console.WriteLine($"the number of message sent: {i}");
+                    send(); // sending 1000 messages async
                 }
 
-                await mqttPublisherClient.StopAsync();
+                Shutdown.WaitOne();                
+                // await mqttPublisherClient.StopAsync();
             });
 
             publisher.Start();
-        }        
+        }
+        static void send() {
+
+        }
     }
 }
 
