@@ -96,9 +96,7 @@ namespace MQTTPublisherTest
 
             publisher.Start();
         }
-        static void send() {
-
-        }
+        
     }
 }
 
