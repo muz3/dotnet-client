@@ -25,7 +25,7 @@ namespace MQTTPublisherTest
     		var username = DotNetEnv.Env.GetString("USERNAME"); //subject to change
     		var password = DotNetEnv.Env.GetString("PASSWORD");  //subject to change
     		var topic = DotNetEnv.Env.GetString("TOPIC");
-    		var yourXML = "<?xml version=\"1.0\"?>\r\n";  // a sample test xml in the format your are supposed to send
+    		var yourXML = "<?xml version=\"1.0\"?>\r\naaaaa";  // a sample test xml in the format your are supposed to send
 
             Thread publisher = new Thread(async () =>
             {
