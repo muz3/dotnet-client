@@ -16,13 +16,15 @@ namespace MQTTPublisherTest
         public static ManualResetEvent Shutdown = new ManualResetEvent(false);
         static void Main()
         {
+            DotNetEnv.Env.Load();
+                    
     		// configs, please filling your information accordingly
-    		var customClientId = "companyName-pub-01"; // format suggested 
-    		var loggerName = "companyName-pub-log";
-    		var mqttServAddress = ""; //subject to change
-    		var username = ""; //subject to change
-    		var password = "";  //subject to change
-    		var xtraceTopic = "";
+    		var customClientId = DotNetEnv.Env.GetString("CLIENT_ID"); // format suggested 
+    		var loggerName = DotNetEnv.Env.GetString("LOGGER_NAME");
+    		var mqttServAddress = DotNetEnv.Env.GetString("MQTT_ADDR"); //subject to change
+    		var username = DotNetEnv.Env.GetString("USERNAME"); //subject to change
+    		var password = DotNetEnv.Env.GetString("PASSWORD");  //subject to change
+    		var topic = DotNetEnv.Env.GetString("TOPIC");
     		var yourXML = "<?xml version=\"1.0\"?>\r\n";  // a sample test xml in the format your are supposed to send
 
             Thread publisher = new Thread(async () =>
@@ -64,11 +66,24 @@ namespace MQTTPublisherTest
                     Console.WriteLine("### CONNECTED WITH SERVER ###");
                 };
 
+                mqttPublisherClient.ApplicationMessageProcessed += (s, e) =>
+                {   
+                    // Console.WriteLine(JsonConvert.SerializeObject(e));
+                    // Console.WriteLine(JsonConvert.SerializeObject(s));
+                    // Console.WriteLine($"Processed Message: + Topic = {e.ApplicationMessage.Topic}");
+                    if ( e.HasSucceeded ) {
+                        Console.WriteLine("message successfully published!");
+                    }
+                    else {
+                        Console.WriteLine("message failed to publish!");
+                    }                  
+                }; 
+
                 Action send = async () =>
                 {
                     var msg = new MqttApplicationMessage
                     {
-                        Topic = xtraceTopic,
+                        Topic = topic,
                         QualityOfServiceLevel = MqttQualityOfServiceLevel.AtLeastOnce,
                         Retain = true,
                         Payload = System.Text.Encoding.UTF8.GetBytes( 
@@ -85,7 +100,7 @@ namespace MQTTPublisherTest
                     Console.WriteLine($"Published topic: {msg.Topic}");
                 };
 
-                for ( var i = 1; i <= 1000; i++){
+                for ( var i = 1; i <= 1; i++){
                     Console.WriteLine($"the number of message sent: {i}");
                     send(); // sending 1000 messages async
                 }

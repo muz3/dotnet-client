@@ -1,3 +1,6 @@
-.vscode
-bin
-obj
+**/.vscode
+**/bin
+**/obj
+**/xmltest.txt
+**/.env
+**/.DS_Store
