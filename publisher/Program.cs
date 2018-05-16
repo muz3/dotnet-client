@@ -13,7 +13,9 @@ namespace MQTTPublisherTest
 {
     internal class Publisher
     {
-        public static ManualResetEvent Shutdown = new ManualResetEvent(false);
+        // public static ManualResetEvent Shutdown = new ManualResetEvent(false);
+        public static IManagedMqttClient mqttPublisherClient;
+
         static void Main()
         {
             DotNetEnv.Env.Load();
@@ -41,7 +43,7 @@ namespace MQTTPublisherTest
 
                 var factory = new MqttFactory();
 
-                var mqttPublisherClient = factory.CreateManagedMqttClient(new MqttNetLogger(loggerName));
+                mqttPublisherClient = factory.CreateManagedMqttClient(new MqttNetLogger(loggerName));
                 MqttNetGlobalLogger.LogMessagePublished += (s, e) =>
                 {
                     var trace = $">> [{e.TraceMessage.Timestamp:O}] [{e.TraceMessage.ThreadId}] [{e.TraceMessage.Source}] [{e.TraceMessage.Level}]: {e.TraceMessage.Message}";
@@ -52,9 +54,6 @@ namespace MQTTPublisherTest
 
                     Debug.WriteLine('\x2' + trace);
                 };
-
-                await mqttPublisherClient.StartAsync(options);
-                Console.WriteLine("mqtt client started\n");
 
                 mqttPublisherClient.Disconnected += (s, e) =>
                 {
@@ -100,16 +99,26 @@ namespace MQTTPublisherTest
                     Console.WriteLine($"Published topic: {msg.Topic}");
                 };
 
-                for ( var i = 1; i <= 1; i++){
-                    Console.WriteLine($"the number of message sent: {i}");
-                    send(); // sending 1000 messages async
+              // for ( var i = 1; i <= 1; i++){
+              //     Console.WriteLine($"the number of message sent: {i}");
+              //     send(); // sending 1000 messages async
+              // }
+
+               await mqttPublisherClient.StartAsync(options);
+               Console.WriteLine("mqtt client started\n");
+
+                while (mqttPublisherClient.IsStarted) {
+                    // long running
                 }
 
-                Shutdown.WaitOne();                
+                // Shutdown.WaitOne();
                 // await mqttPublisherClient.StopAsync();
             });
 
+
+
             publisher.Start();
+            Console.WriteLine("teting...");
         }
         
     }
