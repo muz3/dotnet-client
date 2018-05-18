@@ -5,11 +5,7 @@
     protected override void OnStart(string[] args) {
           // create our threadstart object to wrap our delegate method
           ThreadStart ts = new ThreadStart( this.ServiceMQTT );
-
-          // create the manual reset event and
-          // set it to an initial state of unsignaled
-          _shutdownEvent = new ManualResetEvent(false);
-
+      
           // create the worker thread
           _thread = new Thread( ts );
 
