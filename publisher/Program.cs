@@ -27,7 +27,7 @@ namespace MQTTPublisherTest
     		var username = DotNetEnv.Env.GetString("USERNAME"); //subject to change
     		var password = DotNetEnv.Env.GetString("PASSWORD");  //subject to change
     		var topic = DotNetEnv.Env.GetString("TOPIC");
-    		var yourXML = "<?xml version=\"1.0\"?>\r\naaaaa";  // a sample test xml in the format your are supposed to send
+    		var yourXML = "<?xml version=\"1.0\"?>\r\n";  // a sample test xml in the format your are supposed to send
 
             Thread publisher = new Thread(async () =>
             {
@@ -99,13 +99,20 @@ namespace MQTTPublisherTest
                     Console.WriteLine($"Published topic: {msg.Topic}");
                 };
 
-              // for ( var i = 1; i <= 1; i++){
-              //     Console.WriteLine($"the number of message sent: {i}");
-              //     send(); // sending 1000 messages async
-              // }
+              
+                try {
+                    await mqttPublisherClient.StartAsync(options);
+                    Console.WriteLine("mqtt client started\n");
+                } catch (Exception e) {
+                    Console.WriteLine(e);
+                }
+               
 
-               await mqttPublisherClient.StartAsync(options);
-               Console.WriteLine("mqtt client started\n");
+            //   for (var i = 1; i <= 1; i++)
+            //   {
+            //     Console.WriteLine($"the number of message sent: {i}");
+            //     send(); // sending 1000 messages async
+            //   }
 
                 while (mqttPublisherClient.IsStarted) {
                     // long running
