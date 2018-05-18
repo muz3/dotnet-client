@@ -73,3 +73,12 @@
           
     }
 
+    protected override void OnStop()
+    {
+      _shutdownEvent.Set();
+      if (!_thread.Join(3000))
+      { // give the thread 3 seconds to stop
+        _thread.Abort();
+      }
+    }
+
