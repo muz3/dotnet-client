@@ -1,5 +1,8 @@
-To Run:
-	1. install dotnet-cli (https://github.com/dotnet/cli)
+note: publisher and subscriber are two seperate .dot programs.
+
+To Run publisher:
+	1. install .NET SDK (https://www.microsoft.com/net/learn/dotnet/hello-world-tutorial)
 	2. add dotnet path (export PATH=/usr/local/share/dotnet:$PATH)
-	3. go to xtrace-dotnet-client, run "dotnet restore"
+	3. go to dotnet-client/publisher folder, run "dotnet restore"
+	4. open .env file and paste in the correct configure variables provide through email
 	4. then run "dotnet run"
