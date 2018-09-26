@@ -13,7 +13,7 @@ namespace MQTTPublisherTest
 {
     internal class Publisher
     {
-        // public static ManualResetEvent Shutdown = new ManualResetEvent(false);
+        public static ManualResetEvent Shutdown = new ManualResetEvent(false);
         public static IManagedMqttClient mqttPublisherClient;
 
         static void Main()
@@ -114,11 +114,11 @@ namespace MQTTPublisherTest
             //     send(); // sending 1000 messages async
             //   }
 
-                while (mqttPublisherClient.IsStarted) {
-                    // long running
-                }
+                // while (mqttPublisherClient.IsStarted) {
+                //     // long running
+                // }
 
-                // Shutdown.WaitOne();
+                Shutdown.WaitOne();
                 // await mqttPublisherClient.StopAsync();
             });
 
