@@ -57,28 +57,6 @@ namespace MQTTPublisherTest
                     Debug.WriteLine('\x2' + trace);
                 };
 
-                mqttPublisherClient.Disconnected += (s, e) =>
-                {
-                    Console.WriteLine("### DISCONNECTED FROM SERVER ###");
-                };
-
-                mqttPublisherClient.Connected += (s, e) =>
-                {
-                    Console.WriteLine("### CONNECTED WITH SERVER ###");
-                };
-
-                mqttPublisherClient.ApplicationMessageProcessed += (s, e) =>
-                {   
-                    // Console.WriteLine(JsonConvert.SerializeObject(e));
-                    // Console.WriteLine(JsonConvert.SerializeObject(s));
-                    // Console.WriteLine($"Processed Message: + Topic = {e.ApplicationMessage.Topic}");
-                    if ( e.HasSucceeded ) {
-                        Console.WriteLine("message successfully published!");
-                    }
-                    else {
-                        Console.WriteLine("message failed to publish!");
-                    }                  
-                }; 
 
                 Action send = async () =>
                 {
@@ -101,6 +79,31 @@ namespace MQTTPublisherTest
                     Console.WriteLine($"Published topic: {msg.Topic}");
                 };
 
+                mqttPublisherClient.Disconnected += (s, e) =>
+                {
+                    Console.WriteLine("### DISCONNECTED FROM SERVER ###");
+                };
+
+                mqttPublisherClient.Connected += (s, e) =>
+                {
+                    Console.WriteLine("### CONNECTED WITH SERVER ###"); 
+                    for (var i = 1; i <= 1; i++)
+                    {
+                        Console.WriteLine($"the number of message sent: {i}");
+                        send(); // sending 1000 messages async
+                    }
+                   
+                };
+
+                mqttPublisherClient.ApplicationMessageProcessed += (s, e) =>
+                {                       
+                    if ( e.HasSucceeded ) {
+                        Console.WriteLine("message successfully published!");
+                    }
+                    else {
+                        Console.WriteLine("message failed to publish!");
+                    }                  
+                }; 
               
                 try {
                     await mqttPublisherClient.StartAsync(options);
@@ -109,25 +112,12 @@ namespace MQTTPublisherTest
                     Console.WriteLine(e);
                 }
                
-
-            //   for (var i = 1; i <= 1; i++)
-            //   {
-            //     Console.WriteLine($"the number of message sent: {i}");
-            //     send(); // sending 1000 messages async
-            //   }
-
-                // while (mqttPublisherClient.IsStarted) {
-                //     // long running
-                // }
-
                 Shutdown.WaitOne();
                 // await mqttPublisherClient.StopAsync();
             });
 
-
-
             publisher.Start();
-            Console.WriteLine("teting...");
+            Console.WriteLine("testing dotnet mqtt client...");
         }
         
     }
