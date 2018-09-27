@@ -31,12 +31,14 @@ namespace MQTTPublisherTest
 
             Thread publisher = new Thread(async () =>
             {
+                Console.WriteLine(mqttServAddress);
                 // Setup and start a managed MQTT client.
                 var options = new ManagedMqttClientOptionsBuilder()
                     .WithAutoReconnectDelay(TimeSpan.FromSeconds(5))
                     .WithClientOptions(new MqttClientOptionsBuilder()
                         .WithClientId(customClientId)
-                        .WithWebSocketServer(mqttServAddress)                        
+                        .WithWebSocketServer(mqttServAddress)                                                
+                        //.WithTcpServer(mqttServAddress) // use this for local tcp connection 
 					    .WithCredentials(username, password)
                         .Build())
                     .Build();

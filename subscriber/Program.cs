@@ -26,6 +26,7 @@ namespace MQTTSubscriberTest
     		var username = DotNetEnv.Env.GetString("USERNAME"); //subject to change
     		var password = DotNetEnv.Env.GetString("PASSWORD");  //subject to change
     		var topic = DotNetEnv.Env.GetString("TOPIC");
+            Console.WriteLine(mqttServAddress);
 
             Thread subscriber = new Thread(async () =>
             {
