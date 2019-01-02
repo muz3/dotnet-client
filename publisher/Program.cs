@@ -78,7 +78,13 @@ namespace MQTTPublisherTest
                     await mqttPublisherClient.PublishAsync(msg);
                     Console.WriteLine($"Published topic: {msg.Topic}");
                 };
-
+                // * This is the place to publish mqtt message by calling send() 
+                for (var i = 1; i <= 1; i++)
+                {
+                    Console.WriteLine($"the number of message sent: {i}");
+                    send(); // sending 1000 messages async
+                }
+                
                 mqttPublisherClient.Disconnected += (s, e) =>
                 {
                     Console.WriteLine("### DISCONNECTED FROM SERVER ###");
@@ -86,13 +92,7 @@ namespace MQTTPublisherTest
 
                 mqttPublisherClient.Connected += (s, e) =>
                 {
-                    Console.WriteLine("### CONNECTED WITH SERVER ###"); 
-                    for (var i = 1; i <= 1; i++)
-                    {
-                        Console.WriteLine($"the number of message sent: {i}");
-                        send(); // sending 1000 messages async
-                    }
-                   
+                    Console.WriteLine("### CONNECTED WITH SERVER ###");                                    
                 };
 
                 mqttPublisherClient.ApplicationMessageProcessed += (s, e) =>
@@ -118,6 +118,7 @@ namespace MQTTPublisherTest
 
             publisher.Start();
             Console.WriteLine("testing dotnet mqtt client...");
+            
         }
         
     }
